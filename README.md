@@ -36,10 +36,9 @@ ScholarDex is a centralized student management platform built to streamline acad
    - Copy the provided connection string to use during the environment configuration phase.
 
 3. **Import Postman Collection**
-
-- Open the `postman/` directory in this project.
-- Import the provided `.json` file into your **Postman** workspace.
-- Read the description for each request to understand the API endpoints, headers, and required parameters.
+   - Open the `postman/` directory in this project.
+   - Import the provided `.json` file into your **Postman** workspace.
+   - Read the description for each request to understand the API endpoints, headers, and required parameters.
 
 4. **Clone the Repository**
 
