@@ -2,6 +2,8 @@
 
 ## 📌 Description
 
+ScholarDex is a centralized student management platform built to streamline academic record-keeping and administrative workflows. The system features role-based authentication for both students and administrators, allowing authorized users to manage student profiles, update record details, and track authentication session logs.
+
 ---
 
 ## 🛠️ Tech Stack
@@ -107,6 +109,14 @@ npm run start:dev
 # Using pnpm
 pnpm start:dev
 ```
+
+---
+
+## 📬 Import Postman Collection
+
+- Open the `postman/` directory in this project.
+- Import the provided `.json` file into your **Postman** workspace.
+- Read the description for each request to understand the API endpoints, headers, and required parameters.
 
 ---
 
