@@ -35,14 +35,20 @@ ScholarDex is a centralized student management platform built to streamline acad
    - Once created, click the **Connect** button to view your database connection details.
    - Copy the provided connection string to use during the environment configuration phase.
 
-3. **Clone the Repository**
+3. **Import Postman Collection**
+
+- Open the `postman/` directory in this project.
+- Import the provided `.json` file into your **Postman** workspace.
+- Read the description for each request to understand the API endpoints, headers, and required parameters.
+
+4. **Clone the Repository**
 
 ```bash
 git clone https://github.com/Fikri-Rouzan/scholardex.git
 cd scholardex
 ```
 
-4. **Install Packages**
+5. **Install Packages**
 
 ```bash
 # Using npm
@@ -52,7 +58,7 @@ npm i
 pnpm i
 ```
 
-5. **Configure Environment Variables**
+6. **Configure Environment Variables**
 
 ```bash
 cp .env.example .env
@@ -70,7 +76,7 @@ cp .env.example .env
   ADMIN_PASSWORD="YOUR_ADMIN_PASSWORD"
   ```
 
-6. **Generate Database Client**
+7. **Generate Database Client**
 
 ```bash
 # Using npm
@@ -80,7 +86,7 @@ npx prisma generate
 pnpm prisma generate
 ```
 
-7. **Run Database Migration**
+8. **Run Database Migration**
 
 ```bash
 # Using npm
@@ -90,7 +96,7 @@ npx prisma migrate dev
 pnpm prisma migrate dev
 ```
 
-8. **Run the Admin Seeder**
+9. **Run the Admin Seeder**
 
 ```bash
 # Using npm
@@ -100,7 +106,7 @@ npm run seed
 pnpm seed
 ```
 
-9. **Run the Program**
+10. **Run the Program**
 
 ```bash
 # Using npm
@@ -109,14 +115,6 @@ npm run start:dev
 # Using pnpm
 pnpm start:dev
 ```
-
----
-
-## 📬 Import Postman Collection
-
-- Open the `postman/` directory in this project.
-- Import the provided `.json` file into your **Postman** workspace.
-- Read the description for each request to understand the API endpoints, headers, and required parameters.
 
 ---
 
