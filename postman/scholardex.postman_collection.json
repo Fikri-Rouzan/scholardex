@@ -1,0 +1,500 @@
+{
+  "info": {
+    "_postman_id": "scholardex-collection-id",
+    "name": "ScholarDex API",
+    "description": "# ScholarDex API Documentation\n\nWelcome to the official Postman API collection for **ScholarDex API**, a NestJS-powered backend service built for managing student profiles, administrative workflows, and authentication session logs.\n\n---\n\n## 🚀 Getting Started\n\n### ⚙️ Environment Configuration\n\nBefore running any requests, ensure you have selected an active environment in Postman (e.g., `ScholarDex Env`) populated with the following variables:\n\n| Variable        | Initial Value | Description                                                           |\n| :-------------- | :------------ | :-------------------------------------------------------------------- |\n| `student_token` | (empty)       | Automatically populated upon successful Student registration or login |\n| `admin_token`   | (empty)       | Automatically populated upon successful Admin login                   |\n\n### 🔐 Automated Authentication Workflow\n\nRequests within the **Auth** folder include Postman post-response scripts. Upon receiving a successful response (`200 OK` or `201 Created`), these scripts automatically extract the JWT bearer token and save it to both Environment and Global variables (`student_token` and `admin_token`).\n\n---\n\n## 📁 Collection Structure\n\n### 🔑 Auth\n\nEndpoints handling account registration, login, and token session validation:\n\n- **Register Student** (`POST /auth/register`): Creates a new student account and automatically populates `student_token`.\n- **Login Student** (`POST /auth/student/login`): Authenticates a student using NIM and password.\n- **Login Admin** (`POST /auth/admin/login`): Authenticates an administrator using username and password.\n- **Logout** (`POST /auth/logout`): Logs out the active user and updates the logout timestamp.\n- **Get Profile (Auth)** (`GET /auth/profile`): Verifies active JWT authentication and returns current user details.\n\n### 🎓 Student Role\n\nProtected endpoints accessible exclusively to authenticated **Students** (`Bearer {{student_token}}`):\n\n- **Get My Profile** (`GET /students/me`): Fetches the profile data of the currently logged-in student.\n- **Update My Profile** (`PUT /students/me`): Updates personal profile details (NIM changes are strictly prohibited).\n\n### 🛡️ Admin Role\n\nProtected endpoints restricted to authenticated **Administrators** (`Bearer {{admin_token}}`):\n\n- **Create Admin Direct** (`POST /admin`): Registers a new administrator account.\n- **Create Student** (`POST /students`): Allows administrators to manually add a new student record.\n- **Get All Students** (`GET /students`): Fetches a complete list of registered students.\n- **Get Student By ID** (`GET /students/:id`): Fetches detailed student information by ID.\n- **Update Student By ID** (`PUT /students/:id`): Updates a student's profile information by ID.\n- **Delete Student By ID** (`DELETE /students/:id`): Permanently removes a student record from the system.\n\n### 📜 History\n\nAudit and session logging endpoints restricted to **Administrators** (`Bearer {{admin_token}}`):\n\n- **Get All History** (`GET /history`): Retrieves complete student login and logout history logs.\n- **Delete History By ID** (`DELETE /history/:id`): Removes a specific history log entry.\n\n---\n\n## ⚠️ Troubleshooting Tip\n\n- **401 Unauthorized**: Verify that `JWT_EXPIRES` in your backend `.env` file is set in raw seconds (e.g., `3600` for 1 hour). Re-run **Login Admin** or **Login Student** after ensuring your Postman environment is active.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {\n    var jsonData = pm.response.json();\n    pm.environment.set('student_token', jsonData.access_token);\n    pm.globals.set('student_token', jsonData.access_token);\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nim\": \"11200930000001\",\n  \"name\": \"John Doe\",\n  \"password_plain\": \"student123\",\n  \"dob\": \"2002-05-20\",\n  \"phone\": \"08123456789\",\n  \"address\": \"Jakarta\",\n  \"hobby\": \"Reading\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {\n    var jsonData = pm.response.json();\n    pm.environment.set('student_token', jsonData.access_token);\n    pm.globals.set('student_token', jsonData.access_token);\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nim\": \"11200930000001\",\n  \"password\": \"student123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/student/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "student", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {\n    var jsonData = pm.response.json();\n    pm.environment.set('admin_token', jsonData.access_token);\n    pm.globals.set('admin_token', jsonData.access_token);\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/admin/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "admin", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile (Auth)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints handling account registration, login, and token session validation."
+    },
+    {
+      "name": "Student Role",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/students/me",
+              "host": ["{{base_url}}"],
+              "path": ["students", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe Updated\",\n  \"hobby\": \"Gaming & Coding\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/students/me",
+              "host": ["{{base_url}}"],
+              "path": ["students", "me"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Protected endpoints accessible exclusively to authenticated **Students** (`Bearer {{student_token}}`)."
+    },
+    {
+      "name": "Admin Role",
+      "item": [
+        {
+          "name": "Create Admin Direct",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password_plain\": \"admin1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin",
+              "host": ["{{base_url}}"],
+              "path": ["admin"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Student",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nim\": \"11200930000002\",\n  \"name\": \"Jane Doe\",\n  \"password_plain\": \"student123\",\n  \"dob\": \"2001-08-15\",\n  \"phone\": \"08987654321\",\n  \"address\": \"Bandung\",\n  \"hobby\": \"Painting\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/students",
+              "host": ["{{base_url}}"],
+              "path": ["students"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Students",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/students",
+              "host": ["{{base_url}}"],
+              "path": ["students"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Student By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/students/:id",
+              "host": ["{{base_url}}"],
+              "path": ["students", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INSERT_STUDENT_ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Student By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe Updated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/students/:id",
+              "host": ["{{base_url}}"],
+              "path": ["students", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INSERT_STUDENT_ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Student By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/students/:id",
+              "host": ["{{base_url}}"],
+              "path": ["students", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INSERT_STUDENT_ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Protected endpoints restricted to authenticated **Administrators** (`Bearer {{admin_token}}`)."
+    },
+    {
+      "name": "History",
+      "item": [
+        {
+          "name": "Get All History",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/history",
+              "host": ["{{base_url}}"],
+              "path": ["history"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete History By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/history/:id",
+              "host": ["{{base_url}}"],
+              "path": ["history", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INSERT_HISTORY_ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Audit and session logging endpoints restricted to **Administrators** (`Bearer {{admin_token}}`)."
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    }
+  ]
+}

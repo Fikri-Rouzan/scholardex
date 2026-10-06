@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { AdminService } from './admin/admin.service';
+import { AppModule } from '../src/app.module';
+import { AdminService } from '../src/admin/admin.service';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
